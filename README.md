@@ -1,43 +1,66 @@
-# 📡 Sistem Absensi Sidik Jari IoT dengan ESP32-S3
+# 📡 Smart Attendance System IoT (ESP32-S3 + Firebase)
 
-Sistem absensi cerdas berbasis Internet of Things (IoT) menggunakan mikrokontroler ESP32-S3. Alat ini mengintegrasikan pemindai sidik jari dengan penyimpanan ganda (SD Card lokal dan Firebase secara *online*), serta dilengkapi fitur notifikasi *real-time* melalui WhatsApp.
+![Status Project](https://img.shields.io/badge/Status-Active-success) ![Platform](https://img.shields.io/badge/Platform-ESP32-blue) ![License](https://img.shields.io/badge/License-MIT-green)
+
+**Sistem Absensi Cerdas** berbasis Internet of Things (IoT) yang mengintegrasikan sensor sidik jari, penyimpanan ganda (SD Card & Firebase), dan notifikasi WhatsApp otomatis. Alat ini dirancang untuk mempermudah monitoring kehadiran secara *real-time* dan transparan.
 
 
 
 ## ✨ Fitur Utama
-* **Dual Logging:** Data absensi disimpan secara lokal di SD Card (format CSV) dan dikirim secara *online* ke Firebase Realtime Database.
-* **Notifikasi WhatsApp:** Mengirim pesan otomatis ke nomor tujuan melalui Fonnte API setiap kali ada yang melakukan absensi.
-* **Visualisasi Interaktif:** Menggunakan layar TFT LCD (ST7789) untuk menampilkan status *standby*, jam *real-time*, sukses/gagal absensi, dan nama pengguna.
-* **Sinkronisasi Waktu Akurat:** Dilengkapi modul RTC DS3231 yang disinkronkan dengan NTP Server (saat terhubung WiFi).
-* **Remote Management:** Pendaftaran dan penghapusan sidik jari dapat dikontrol melalui perintah dari Firebase.
 
-## 🛠️ Perangkat Keras (Hardware)
-* Mikrokontroler: ESP32-S3 (Board: Bos Kecil / setara)
-* Sensor Sidik Jari: Optical Fingerprint Sensor (via UART)
-* Layar: TFT LCD ST7789 (Komunikasi SPI)
-* Modul Waktu: RTC DS3231 (Komunikasi I2C)
-* Penyimpanan: MicroSD Card Module (Komunikasi SPI)
-* Indikator: 2x LED (Status WiFi & Status Sukses)
+* **👆 Biometrik Presisi:** Menggunakan sensor sidik jari optik untuk identifikasi cepat.
+* **💾 Dual Logging System:**
+    * **Offline:** Menyimpan data CSV di MicroSD Card (aman saat internet mati).
+    * **Online:** Sinkronisasi *real-time* ke Firebase Realtime Database.
+* **📱 Notifikasi WhatsApp:** Mengirim pesan otomatis ke admin/orang tua saat absensi berhasil (via Fonnte API).
+* **🖥️ Antarmuka Interaktif:** Layar TFT ST7789 menampilkan Jam, Tanggal, Nama, dan Status (Tepat Waktu/Terlambat).
+* **⏰ Waktu Akurat:** Menggunakan RTC DS3231 yang disinkronkan otomatis dengan NTP Server.
+* **☁️ Kontrol Jarak Jauh:** Pendaftaran (Enroll) dan Penghapusan data sidik jari dikendalikan melalui perintah web/database.
 
-## 📌 Konfigurasi Pin (Pinout)
-| Komponen | Pin ESP32-S3 | Keterangan |
-| :--- | :--- | :--- |
-| **Layar TFT (ST7789)** | `CS: 21`, `RST: 48`, `DC: 47`, `MOSI/SDA: 6`, `SCLK/SCL: 7` | Software SPI |
-| **MicroSD Card** | `CS: 10`, `MOSI: 11`, `MISO: 13`, `SCK: 12` | Hardware SPI |
-| **Sensor Sidik Jari** | `RX: 18`, `TX: 17` | UART (Serial 1) |
-| **RTC DS3231** | `SDA: 8`, `SCL: 9` | I2C |
-| **LED Indikator** | `WIFI: 4`, `SUKSES: 5` | Output Digital |
+---
 
-## 💻 Library yang Dibutuhkan
-Pastikan Anda sudah menginstal *library* berikut di Arduino IDE:
-* `WiFi.h`, `HTTPClient.h`, `SPI.h`, `Wire.h`, `SD.h`, `FS.h` (Bawaan ESP32 Core)
-* [Adafruit Fingerprint Sensor Library](https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library)
-* [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
-* [Adafruit ST7789 Library](https://github.com/adafruit/Adafruit-ST7735-Library)
-* [RTClib](https://github.com/adafruit/RTClib) (Untuk RTC DS3231)
-* [ArduinoJson](https://arduinojson.org/) (Untuk parsing data Firebase/Fonnte)
+## 🛠️ Komponen & Skema Rangkaian
 
-## 🚀 Cara Penggunaan & Instalasi
-1. **Clone repositori ini:**
-   ```bash
-   git clone [https://github.com/UsernameAnda/NamaRepositoriAnda.git](https://github.com/UsernameAnda/NamaRepositoriAnda.git)
+Berikut adalah daftar komponen dan koneksi pin ke **ESP32-S3 (Board: Bos Kecil / DevKit V1)**:
+
+| Komponen | Pin ESP32 | Protokol | Catatan |
+| :--- | :--- | :--- | :--- |
+| **TFT LCD ST7789** | `CS:21`, `RST:48`, `DC:47`, `MOSI:6`, `SCK:7` | SPI (SW) | *Cek tegangan (biasanya 3.3V)* |
+| **MicroSD Module** | `CS:10`, `MOSI:11`, `MISO:13`, `SCK:12` | SPI (HW) | *Format kartu ke FAT32* |
+| **Fingerprint Sensor** | `RX:18`, `TX:17` | UART | *TX Sensor ke RX ESP, RX Sensor ke TX ESP* |
+| **RTC DS3231** | `SDA:8`, `SCL:9` | I2C | *Baterai CMOS wajib terpasang* |
+| **LED WiFi** | `GPIO 4` | Output | *Indikator koneksi internet* |
+| **LED Sukses** | `GPIO 5` | Output | *Indikator absensi berhasil* |
+
+---
+
+## ⚙️ Instalasi & Konfigurasi
+
+### 1. Persiapan Software
+Pastikan Anda telah menginstal **Arduino IDE** dan library berikut:
+* `Adafruit Fingerprint Sensor Library`
+* `Adafruit GFX Library` & `Adafruit ST7789 Library`
+* `RTClib` (by Adafruit)
+* `ArduinoJson` (by Benoit Blanchon)
+* `WiFi`, `HTTPClient`, `SPI`, `SD`, `Wire` (Bawaan ESP32)
+
+### 2. Konfigurasi Kredensial
+Buka file `.ino` dan sesuaikan bagian ini dengan data Anda:
+
+```cpp
+// Konfigurasi WiFi
+#define WIFI_SSID "Nama_WiFi_Anda"
+#define WIFI_PASSWORD "Password_WiFi_Anda"
+
+// Konfigurasi Firebase (Realtime Database)
+#define DATABASE_URL "[https://project-id-default-rtdb.firebaseio.com](https://project-id-default-rtdb.firebaseio.com)"
+#define DATABASE_SECRET "Kode_Rahasia_Database_Anda"
+
+// Konfigurasi WhatsApp (Fonnte)
+#define FONNTE_TOKEN "Token_API_Fonnte_Anda" 
+#define NOMOR_TUJUAN "08xxxxxxxxxx"
+
+3. Setup Firebase
+Buat database di Firebase dan pastikan strukturnya siap menerima data. Aturan (Rules) database sebaiknya diatur agar bisa dibaca/tulis oleh alat (atau gunakan Auth Secret seperti di kode).
+
+
