@@ -62,7 +62,7 @@ Buka file `.ino` dan sesuaikan bagian ini dengan data Anda:
 
 ```
 
-### 3. Konfigurasi Kredensial
+### 3. Setup Firebase
 Buat database di Firebase dan pastikan strukturnya siap menerima data. Aturan (Rules) database sebaiknya diatur agar bisa dibaca/tulis oleh alat (atau gunakan Auth Secret seperti di kode).
 
 
