@@ -60,7 +60,7 @@ Buka file `.ino` dan sesuaikan bagian ini dengan data Anda:
 #define FONNTE_TOKEN "Token_API_Fonnte_Anda" 
 #define NOMOR_TUJUAN "08xxxxxxxxxx"
 
-```cpp
+```
 
 ### 3. Konfigurasi Kredensial
 Buat database di Firebase dan pastikan strukturnya siap menerima data. Aturan (Rules) database sebaiknya diatur agar bisa dibaca/tulis oleh alat (atau gunakan Auth Secret seperti di kode).
