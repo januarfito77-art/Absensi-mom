@@ -60,7 +60,7 @@ Buka file `.ino` dan sesuaikan bagian ini dengan data Anda:
 #define FONNTE_TOKEN "Token_API_Fonnte_Anda" 
 #define NOMOR_TUJUAN "08xxxxxxxxxx"
 
-**### 3. Setup firebase**
+### 3. Setup firebase
 Buat database di Firebase dan pastikan strukturnya siap menerima data. Aturan (Rules) database sebaiknya diatur agar bisa dibaca/tulis oleh alat (atau gunakan Auth Secret seperti di kode).
 
 
